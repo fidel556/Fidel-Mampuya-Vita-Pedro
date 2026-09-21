@@ -1,0 +1,123 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with role-based access information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["admin", "user", "manager"] },
+        "department": { "type": "string", "maxLength": 80 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "AccessQuote": {
+      "title": "AccessQuote",
+      "description": "Remote access quotation and access request per person count and specifications",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 128 },
+        "userName": { "type": "string", "maxLength": 100 },
+        "projectTitle": { "type": "string", "maxLength": 120 },
+        "peopleCount": { "type": "number" },
+        "accessType": { "type": "string", "enum": ["RDP", "SSH", "VPN_FULL", "WEB_GATEWAY"] },
+        "durationDays": { "type": "number" },
+        "securityTier": { "type": "string", "enum": ["STANDARD", "ENCRYPTED_E2E", "MAX_ISOLATION"] },
+        "unitPricePerPerson": { "type": "number" },
+        "totalCost": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "privacyTermsAccepted": { "type": "boolean" },
+        "privacyNoticeVersion": { "type": "string", "maxLength": 20 },
+        "status": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED", "ACTIVE", "REVOKED", "EXPIRED"] },
+        "encryptedPayload": { "type": "string", "maxLength": 2048 },
+        "hashSignature": { "type": "string", "maxLength": 128 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "approvedBy": { "type": "string", "maxLength": 128 },
+        "approvalEmailSent": { "type": "boolean" },
+        "approvalEmailDetails": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "projectTitle", "peopleCount", "accessType", "durationDays", "privacyTermsAccepted", "status"]
+    },
+    "ActiveSession": {
+      "title": "ActiveSession",
+      "description": "Real-time active remote access session for live administration and counting",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "quoteId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 128 },
+        "machineName": { "type": "string", "maxLength": 80 },
+        "protocol": { "type": "string", "enum": ["RDP", "SSH", "VPN", "WEB"] },
+        "ipAddressMasked": { "type": "string", "maxLength": 40 },
+        "status": { "type": "string", "enum": ["CONNECTED", "IDLE", "TERMINATED_BY_ADMIN"] },
+        "encryptedSessionToken": { "type": "string", "maxLength": 512 },
+        "connectedAt": { "type": "string" },
+        "lastHeartbeat": { "type": "string" }
+      },
+      "required": ["quoteId", "status", "connectedAt"]
+    },
+    "SupportMessage": {
+      "title": "SupportMessage",
+      "description": "Integrated technical support chat message",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "senderId": { "type": "string", "maxLength": 128 },
+        "senderEmail": { "type": "string", "maxLength": 128 },
+        "senderName": { "type": "string", "maxLength": 100 },
+        "senderRole": { "type": "string", "enum": ["admin", "user", "support_bot"] },
+        "quoteId": { "type": "string", "maxLength": 128 },
+        "message": { "type": "string", "maxLength": 1000 },
+        "isEncrypted": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["senderId", "senderEmail", "senderRole", "message", "createdAt"]
+    },
+    "AuditLogBlock": {
+      "title": "AuditLogBlock",
+      "description": "Decentralized cryptographic audit trail block with chain hashing",
+      "type": "object",
+      "properties": {
+        "blockIndex": { "type": "number" },
+        "action": { "type": "string", "maxLength": 100 },
+        "performedBy": { "type": "string", "maxLength": 128 },
+        "entityId": { "type": "string", "maxLength": 128 },
+        "detailsMasked": { "type": "string", "maxLength": 500 },
+        "prevBlockHash": { "type": "string", "maxLength": 128 },
+        "blockHash": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["blockIndex", "action", "performedBy", "prevBlockHash", "blockHash", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Stores user profiles and role authorizations"
+    },
+    "/quotes/{quoteId}": {
+      "schema": "AccessQuote",
+      "description": "Stores remote access quotations and requests"
+    },
+    "/sessions/{sessionId}": {
+      "schema": "ActiveSession",
+      "description": "Live remote sessions for real-time administration"
+    },
+    "/supportMessages/{messageId}": {
+      "schema": "SupportMessage",
+      "description": "Live support chat channel messages"
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLogBlock",
+      "description": "Decentralized cryptographic audit ledger blocks"
+    }
+  }
+}

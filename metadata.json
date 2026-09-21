@@ -1,0 +1,6 @@
+{
+  "name": "Portal de Acesso Remoto e Cotação",
+  "description": "Sistema de gestão e cotação de acesso remoto com autenticação, monitoramento em tempo real, auditoria criptográfica e suporte integrado.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
